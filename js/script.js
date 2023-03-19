@@ -10,6 +10,7 @@ const playAgainButton = document.querySelector(".play-again");
 const word ="magnolia";
 const guessedLetters = [];
 
+// show symbol for chosen word's letters
 const blackSpot = function (word) {
     const hiddenLetters = [];
     for (const letter of word) {
@@ -26,6 +27,7 @@ guessButton.addEventListener("click", function (e) {
     message.innerText = "";
     const guess = inputBox.value;
     const goodGuess = letterValidator(guess);
+
     if (goodGuess) {
         makeGuess(guess);
     }
@@ -33,8 +35,8 @@ guessButton.addEventListener("click", function (e) {
 });
 
 const letterValidator = function (input) {
-    const acceptedLetter = /[a=zA-Z]/;
-    if (input.length ===0) {
+    const acceptedLetter = /[a-zA-Z]/;
+    if (input.length === 0) {
         //is the input empty?
         message.innerText = "please enter a letter.";
     } else if (input.length > 1) {
@@ -56,5 +58,39 @@ const makeGuess = function (guess) {
     } else {
        guessedLetters.push(guess);
        console.log(guessedLetters);
+        currentGuesses();
+        updateWordProgress(guessedLetters);
+    }
+};
+
+const currentGuesses = function () {
+    guessedLettersAppear.innerHTML = "";
+    for (const letter of guessedLetters) {
+        const li = document.createElement("li");
+        li.innerText = letter;
+        guessedLettersAppear.append(li);
+    }
+};
+
+const updateWordProgress = function (guessedLetters) {
+    const wordUpper = word.toUpperCase();
+    const wordArray = wordUpper.split("");
+    //console.log(wordArray);
+    const revealWord = [];
+    for (const letter of wordArray) {
+        if (guessedLetters.includes(letter)) {
+            revealWord.push(letter.toUpperCase());
+        } else {
+            revealWord.push("●");
+        }
+    }
+    wordInProgress.innerText = revealWord.join("");
+    youWin();
+};
+
+const youWin = function () {
+    if (word.toUpperCase() === wordInProgress.innerText) {
+        message.classList.add("win");
+        message.innerHTML = `<p class="highlight">You guessed correct the word! Congrats</p>`;
     }
 };
